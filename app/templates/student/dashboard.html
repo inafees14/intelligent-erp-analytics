@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard - ERP Portal{% endblock %}
+{% block nav %}
+<nav class="navbar">
+    <div class="nav-brand">ERP Portal - Student</div>
+    <div class="nav-links">
+        <a href="/student/dashboard" class="nav-link active">Dashboard</a>
+        <a href="/student/marksheet" class="nav-link">View Marksheet</a>
+        <a href="/logout" class="nav-link nav-logout">Logout</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome, {{ student.first_name }} {{ student.last_name }}</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ marksheets|length }}</div>
+            <div class="stat-label">Exams Taken</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ avg_total }}</div>
+            <div class="stat-label">Avg Total Marks</div>
+        </div>
+        <div class="stat-card {% if risk_level == 'High' %}stat-danger{% elif risk_level == 'Medium' %}stat-warning{% else %}stat-success{% endif %}">
+            <div class="stat-value">{{ risk_level }}</div>
+            <div class="stat-label">Risk Level</div>
+        </div>
+        {% if features %}
+        <div class="stat-card">
+            <div class="stat-value">{{ features.study_hours or '-' }}</div>
+            <div class="stat-label">Study Hours</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if features %}
+    <div class="grid-2">
+        <div class="card">
+            <h3>Academic Profile</h3>
+            <div class="profile-info">
+                <div class="info-row"><span>Attendance:</span> <strong>{{ features.attendance or '-' }}</strong></div>
+                <div class="info-row"><span>Study Hours:</span> <strong>{{ features.study_hours or '-' }}</strong></div>
+                <div class="info-row"><span>Past Failures:</span> <strong>{{ features.failures or 0 }}</strong></div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Insights</h3>
+            {% if risk_level == 'High' %}
+            <p class="insight-text danger">⚠️ Your academic profile indicates elevated risk. Consider increasing study hours and reducing absences.</p>
+            {% elif risk_level == 'Medium' %}
+            <p class="insight-text warning">📊 Moderate risk detected. Consistent study habits can improve performance.</p>
+            {% else %}
+            <p class="insight-text success">✅ You are performing well. Keep up the good work!</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h3>Exam Results</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Exam</th>
+                    <th>Year</th>
+                    <th>Subject 1</th>
+                    <th>Subject 2</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in marksheets %}
+                <tr>
+                    <td>{{ m.exam.exam_name }}</td>
+                    <td>{{ m.exam.year }}</td>
+                    <td>{{ m.subject_1_marks }}</td>
+                    <td>{{ m.subject_2_marks }}</td>
+                    <td><strong>{{ m.total_marks }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

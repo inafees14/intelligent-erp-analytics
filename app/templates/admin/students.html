@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Students - ERP Portal{% endblock %}
+{% block nav %}
+<nav class="navbar">
+    <div class="nav-brand">ERP Portal - Admin</div>
+    <div class="nav-links">
+        <a href="/admin/dashboard" class="nav-link">Dashboard</a>
+        <a href="/admin/insert-marks" class="nav-link">Insert Marks</a>
+        <a href="/admin/manage-exams" class="nav-link">Manage Exams</a>
+        <a href="/admin/students" class="nav-link active">Students</a>
+        <a href="/logout" class="nav-link nav-logout">Logout</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Student List</h1>
+    <div class="card">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ s.std_id }}</td>
+                    <td>{{ s.first_name }} {{ s.last_name }}</td>
+                    <td>{{ s.email_id or '-' }}</td>
+                    <td>{{ s.phone_no or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

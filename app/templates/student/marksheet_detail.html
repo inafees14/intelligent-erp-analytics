@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Marksheet - ERP Portal{% endblock %}
+{% block nav %}
+<nav class="navbar">
+    <div class="nav-brand">ERP Portal - Student</div>
+    <div class="nav-links">
+        <a href="/student/dashboard" class="nav-link">Dashboard</a>
+        <a href="/student/marksheet" class="nav-link active">View Marksheet</a>
+        <a href="/logout" class="nav-link nav-logout">Logout</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Marksheet</h1>
+    {% if marksheet and exam %}
+    <div class="marksheet-card">
+        <div class="marksheet-header">
+            <h2>{{ exam.exam_name }}</h2>
+            <span class="year-badge">{{ exam.year }}</span>
+        </div>
+        <div class="marksheet-body">
+            <div class="student-info">
+                <p><strong>Student:</strong> {{ student.first_name }} {{ student.last_name }}</p>
+                <p><strong>Student ID:</strong> {{ student.std_id }}</p>
+            </div>
+            <table class="data-table marksheet-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Subject 1</td>
+                        <td>{{ marksheet.subject_1_marks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Subject 2</td>
+                        <td>{{ marksheet.subject_2_marks }}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>Total Marks</strong></td>
+                        <td><strong>{{ marksheet.total_marks }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <p>No marksheet found for this exam.</p>
+        <a href="/student/marksheet" class="btn btn-secondary">Back to Exam List</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Insert Marks - ERP Portal{% endblock %}
+{% block nav %}
+<nav class="navbar">
+    <div class="nav-brand">ERP Portal - Admin</div>
+    <div class="nav-links">
+        <a href="/admin/dashboard" class="nav-link">Dashboard</a>
+        <a href="/admin/insert-marks" class="nav-link active">Insert Marks</a>
+        <a href="/admin/manage-exams" class="nav-link">Manage Exams</a>
+        <a href="/admin/students" class="nav-link">Students</a>
+        <a href="/logout" class="nav-link nav-logout">Logout</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Insert Marks</h1>
+    <div class="card">
+        <form method="post" action="/admin/insert-marks">
+            <div class="form-group">
+                <label for="std_id">Student</label>
+                <select id="std_id" name="std_id" required>
+                    <option value="">Select Student</option>
+                    {% for s in students %}
+                    <option value="{{ s.std_id }}">{{ s.first_name }} {{ s.last_name }} (ID: {{ s.std_id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exam_id">Exam</label>
+                <select id="exam_id" name="exam_id" required>
+                    <option value="">Select Exam</option>
+                    {% for e in exams %}
+                    <option value="{{ e.exam_id }}">{{ e.exam_name }} ({{ e.year }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="subject_1_marks">Subject 1 Marks</label>
+                    <input type="number" id="subject_1_marks" name="subject_1_marks" step="0.1" min="0" max="20" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject_2_marks">Subject 2 Marks</label>
+                    <input type="number" id="subject_2_marks" name="subject_2_marks" step="0.1" min="0" max="20" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Marks</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

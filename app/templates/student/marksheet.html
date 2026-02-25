@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}View Marksheet - ERP Portal{% endblock %}
+{% block nav %}
+<nav class="navbar">
+    <div class="nav-brand">ERP Portal - Student</div>
+    <div class="nav-links">
+        <a href="/student/dashboard" class="nav-link">Dashboard</a>
+        <a href="/student/marksheet" class="nav-link active">View Marksheet</a>
+        <a href="/logout" class="nav-link nav-logout">Logout</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Select Exam to View Marksheet</h1>
+    <div class="card">
+        <div class="exam-list">
+            {% for e in exams %}
+            <a href="/student/marksheet/{{ e.exam_id }}" class="exam-card">
+                <div class="exam-name">{{ e.exam_name }}</div>
+                <div class="exam-year">{{ e.year }}</div>
+            </a>
+            {% endfor %}
+            {% if not exams %}
+            <p>No exams available yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

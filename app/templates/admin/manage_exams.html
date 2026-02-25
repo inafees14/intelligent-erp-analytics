@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Manage Exams - ERP Portal{% endblock %}
+{% block nav %}
+<nav class="navbar">
+    <div class="nav-brand">ERP Portal - Admin</div>
+    <div class="nav-links">
+        <a href="/admin/dashboard" class="nav-link">Dashboard</a>
+        <a href="/admin/insert-marks" class="nav-link">Insert Marks</a>
+        <a href="/admin/manage-exams" class="nav-link active">Manage Exams</a>
+        <a href="/admin/students" class="nav-link">Students</a>
+        <a href="/logout" class="nav-link nav-logout">Logout</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Manage Exams</h1>
+    <div class="card">
+        <h3>Add New Exam</h3>
+        <form method="post" action="/admin/add-exam">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="exam_name">Exam Name</label>
+                    <input type="text" id="exam_name" name="exam_name" required placeholder="e.g. Midterm Exam">
+                </div>
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="number" id="year" name="year" required placeholder="e.g. 2025" min="2000" max="2100">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Exam</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Existing Exams</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Exam Name</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in exams %}
+                <tr>
+                    <td>{{ e.exam_id }}</td>
+                    <td>{{ e.exam_name }}</td>
+                    <td>{{ e.year }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

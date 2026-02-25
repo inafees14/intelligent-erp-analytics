@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - ERP Portal{% endblock %}
+{% block nav %}
+<nav class="navbar">
+    <div class="nav-brand">ERP Portal - Admin</div>
+    <div class="nav-links">
+        <a href="/admin/dashboard" class="nav-link active">Dashboard</a>
+        <a href="/admin/insert-marks" class="nav-link">Insert Marks</a>
+        <a href="/admin/manage-exams" class="nav-link">Manage Exams</a>
+        <a href="/admin/students" class="nav-link">Students</a>
+        <a href="/logout" class="nav-link nav-logout">Logout</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome, {{ admin.first_name }} {{ admin.last_name }}</h1>
+
+    {% if request.query_params.get('success') %}
+    <div class="alert alert-success">Marks inserted successfully!</div>
+    {% endif %}
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_students }}</div>
+            <div class="stat-label">Total Students</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ total_exams }}</div>
+            <div class="stat-label">Total Exams</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ total_marksheets }}</div>
+            <div class="stat-label">Records</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ avg_marks }}</div>
+            <div class="stat-label">Avg Marks</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3>Performance Summary</h3>
+            <div class="summary-bar">
+                <div class="bar-item pass" style="flex: {{ pass_count }}">Pass: {{ pass_count }}</div>
+                <div class="bar-item fail" style="flex: {{ fail_count }}">Fail: {{ fail_count }}</div>
+            </div>
+            <p>Highest: <strong>{{ max_marks }}</strong> | Lowest: <strong>{{ min_marks }}</strong></p>
+        </div>
+        <div class="card">
+            <h3>Quick Actions</h3>
+            <a href="/admin/insert-marks" class="btn btn-primary">Insert Marks</a>
+            <a href="/admin/manage-exams" class="btn btn-secondary">Manage Exams</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Recent Mark Entries</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Exam</th>
+                    <th>Subject 1</th>
+                    <th>Subject 2</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in recent_marks %}
+                <tr>
+                    <td>{{ m.student.first_name }} {{ m.student.last_name }}</td>
+                    <td>{{ m.exam.exam_name }} ({{ m.exam.year }})</td>
+                    <td>{{ m.subject_1_marks }}</td>
+                    <td>{{ m.subject_2_marks }}</td>
+                    <td><strong>{{ m.total_marks }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
