@@ -5,7 +5,7 @@ import plotly.express as px
 
 import os
 
-API = os.getenv("API_URL", "http://127.0.0.1:8000")
+API = "https://intelligent-erp-analytics-backend.onrender.com"
 
 st.title("📊 Admin Analytics Dashboard")
 
