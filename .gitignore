@@ -7,3 +7,4 @@ data/
 *.csv
 *.pkl
 *.ipynb*.db
+*.db
