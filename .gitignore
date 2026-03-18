@@ -6,4 +6,4 @@ venv/
 data/
 *.csv
 *.pkl
-*.ipynb
+*.ipynb*.db
