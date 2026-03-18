@@ -5,3 +5,8 @@ matplotlib
 scikit-learn
 xgboost
 joblib
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pandas
