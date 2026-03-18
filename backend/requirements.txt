@@ -1,12 +1,9 @@
-streamlit
-pandas
-requests
-matplotlib
-scikit-learn
-xgboost
-joblib
 fastapi
 uvicorn
 sqlalchemy
 pydantic
 pandas
+scikit-learn
+xgboost
+joblib
+python-multipart
