@@ -28,19 +28,19 @@ def model_status():
         return {"model_status": "trained"}
     return {"model_status": "not trained"}
 
-# CHANGED: Accept a string (enroll_no) in the URL
+# Accept a string (enroll_no) in the URL
 @router.get("/predict-risk/{enroll_no}")
 def predict_student_risk(enroll_no: str, db: Session = Depends(get_db)):
     if xgb_model is None:
         raise HTTPException(status_code=500, detail="ML Model is not available on the server.")
         
-    # 1. Fetch Student by Enrollment Number
-    student = db.query(Student).filter(Student.enrollment_number == enroll_no).first()
+    # --- THE FIX: Changed Student.enrollment_number to Student.enroll_no ---
+    student = db.query(Student).filter(Student.enroll_no == enroll_no).first()
     
     if not student:
         raise HTTPException(status_code=404, detail=f"Student with enrollment {enroll_no} not found")
 
-    # 2. Fetch Student's Marks/Engagement data using their internal ID
+    # Fetch Student's Marks/Engagement data using their internal ID
     student_marks = db.query(Marks).filter(Marks.student_id == student.id).all()
     
     if not student_marks:
@@ -81,7 +81,7 @@ def predict_student_risk(enroll_no: str, db: Session = Depends(get_db)):
         
         return {
             "enrollment_number": enroll_no,
-            "student_name": f"{student.first_name} {student.last_name}", # Bonus: Return their name for the UI!
+            "student_name": f"{student.first_name} {student.last_name}",
             "prediction": "At Risk" if prediction_class == 0 else "On Track", 
             "risk_probability": round(float(risk_probability), 3),
             "model_inputs": feature_dict 
