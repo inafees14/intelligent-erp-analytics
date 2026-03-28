@@ -7,14 +7,14 @@ from . import models
 def seed_database():
     db: Session = SessionLocal()
     try:
-        # 1. Prevent Duplication: Check if students already exist
+        # 1. Prevent Duplication
         if db.query(models.Student).first():
             print("Database already seeded. Skipping initial data injection...")
             return
 
-        print("Empty database detected. Seeding with realistic B.Sc. Statistics dummy data...")
+        print("Empty database detected. Seeding with realistic Gaussian distributed dummy data...")
 
-        # 2. Add Realistic Subjects
+        # 2. Add Subjects
         subjects_data = [
             {"subject_name": "Descriptive Statistics", "semester": 1},
             {"subject_name": "Calculus & Matrices", "semester": 1},
@@ -36,14 +36,15 @@ def seed_database():
             db.refresh(sub)
 
         # 3. Add Realistic Students
-        first_names = ["Mohammad", "Syed", "Nazreen", "Abdul", "Kamrul", "Taha", "Aarav", "Aditi", "Priya", "Rahul", "Zoya", "Karan", "Sneha", "Aisha", "Rohan"]
-        last_names = ["Iqbal", "Ali", "Khan", "Aziz", "Hussain", "Rahman", "Sharma", "Gupta", "Patel", "Singh", "Das", "Verma"]
+        first_names = ["Syed", "Nazreen", "Abdul", "Kamrul", "Taha", "Aarav", "Aditi", "Priya", "Rahul", "Zoya", "Karan", "Sneha", "Aisha", "Rohan"]
+        last_names = ["Ali", "Khan", "Aziz", "Hussain", "Rahman", "Sharma", "Gupta", "Patel", "Singh", "Das", "Verma"]
         
         db_students = []
-        for i in range(1, 61):  # Creating 60 students
+        
+        # Generate 60 students 
+        for i in range(1, 61):  
             first = random.choice(first_names)
             last = random.choice(last_names)
-            # Generating realistic enrollment numbers (e.g., GN0581)
             enrollment = f"GN{str(500 + i).zfill(4)}" 
             
             student = models.Student(
@@ -60,23 +61,19 @@ def seed_database():
         for std in db_students:
             db.refresh(std)
 
-        # 4. Add Marks (Sessional out of 30, Endsem out of 70)
+        # 4. Add Marks using a purely Gaussian (Normal) Distribution
         sem1_subjects = [s for s in db_subjects if s.semester == 1]
         
         for student in db_students:
-            # Create varied student performance profiles for better ML analytics visualization
-            profile = random.choice(["excellent", "average", "struggling"])
-            
             for subject in sem1_subjects:
-                if profile == "excellent":
-                    sess = random.randint(24, 29)
-                    end = random.randint(55, 68)
-                elif profile == "average":
-                    sess = random.randint(16, 23)
-                    end = random.randint(35, 54)
-                else: # struggling
-                    sess = random.randint(8, 15)
-                    end = random.randint(12, 34)
+                # Gaussian Distribution for realistic bell curve
+                # Sessional: Mean of 21, Standard Deviation of 4
+                sess = int(random.gauss(21, 4))
+                sess = max(0, min(30, sess))  # Clamp between 0 and 30
+                
+                # Endsem: Mean of 48, Standard Deviation of 10
+                end = int(random.gauss(48, 10))
+                end = max(0, min(70, end))    # Clamp between 0 and 70
                 
                 mark = models.Marks(
                     student_id=student.id,
@@ -88,7 +85,7 @@ def seed_database():
                 db.add(mark)
                 
         db.commit()
-        print("Database successfully seeded with 60 students and their academic records!")
+        print("Database successfully seeded with pure Gaussian distribution!")
 
     except Exception as e:
         print(f"Error seeding database: {e}")
