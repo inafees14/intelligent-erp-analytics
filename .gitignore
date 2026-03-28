@@ -5,6 +5,13 @@ venv/
 .env.local
 data/
 *.csv
-*.pkl
+model_knn.pkl
+model_logistic.pkl
+model_random_forest.pkl
+model_rf_final.pkl
+model_rf_tuned.pkl
+model_svm.pkl
+model_xgboost.pkl
+model_xgb_tuned.pkl
 *.ipynb*.db
 *.db
