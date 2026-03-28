@@ -1,6 +1,26 @@
+# [theme]
+# primaryColor="#1f77b4"
+# backgroundColor="#0e1117"
+# secondaryBackgroundColor="#262730"
+# textColor="#ffffff"
+# font="sans serif"
+
 [theme]
-primaryColor="#1f77b4"
-backgroundColor="#0e1117"
-secondaryBackgroundColor="#262730"
-textColor="#ffffff"
-font="sans serif"
+# A deep, professional indigo/blue for primary actions
+primaryColor = "#4F46E5" 
+
+# A very light, crisp background for the main canvas
+backgroundColor = "#F8FAFC" 
+
+# Pure white for sidebar and metric cards to create depth
+secondaryBackgroundColor = "#FFFFFF" 
+
+# Dark slate for text for high readability 
+textColor = "#0F172A" 
+
+# Clean, modern sans-serif font
+font = "sans serif"
+
+[client]
+# Hides the Streamlit hamburger menu for a cleaner, native app feel
+toolbarMode = "minimal"
