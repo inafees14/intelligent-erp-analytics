@@ -20,15 +20,14 @@ class StudentOut(StudentCreate):
 
 
 # ---------- SUBJECT ----------
-
 class SubjectCreate(BaseModel):
     subject_name: str
     semester: int
-
+    credits: int = 4
+    weight: int = 100
 
 class SubjectOut(SubjectCreate):
     id: int
-
     class Config:
         from_attributes = True
 
@@ -49,17 +48,16 @@ class ExamOut(ExamCreate):
 
 
 # ---------- MARKS ----------
-
 class MarksCreate(BaseModel):
     student_id: int
     subject_id: int
     semester: int
     sessional_marks: int
     endsem_marks: int
-
+    num_of_prev_attempts: int = 0
+    engagement_clicks: int = 0
 
 class MarksOut(MarksCreate):
     id: int
-
     class Config:
         from_attributes = True
