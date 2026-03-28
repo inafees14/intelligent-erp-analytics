@@ -41,17 +41,16 @@ def predict_student_risk(student_id: int, db: Session = Depends(get_db)):
     if not student_marks:
         raise HTTPException(status_code=404, detail="No academic records found for this student")
 
-    # 2. Aggregate the data (Just like Cell 7 & 11 in your train.ipynb)
-    total_clicks = sum(mark.engagement_clicks for mark in student_marks if mark.engagement_clicks)
-    avg_prev_attempts = max(mark.num_of_prev_attempts for mark in student_marks if mark.num_of_prev_attempts) or 0
+# 2. Aggregate the data
+    total_clicks = sum((mark.engagement_clicks or 0) for mark in student_marks)
+    
+    # Safely get max previous attempts (handling 0s and Nones without crashing)
+    attempts = [mark.num_of_prev_attempts for mark in student_marks if mark.num_of_prev_attempts is not None]
+    avg_prev_attempts = max(attempts) if attempts else 0
     
     # Calculate average score from sessional and endsem
     total_score = sum((mark.sessional_marks or 0) + (mark.endsem_marks or 0) for mark in student_marks)
     avg_score = total_score / len(student_marks) if student_marks else 0
-
-    # Assuming standard credits and weights if not in DB (Update if you have these in DB!)
-    studied_credits = 60 * len(student_marks) 
-    total_weight = 100 * len(student_marks)
 
     # 3. Calculate the engineered features from your notebook
     engagement_per_credit = total_clicks / (studied_credits + 1)
