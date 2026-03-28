@@ -28,18 +28,25 @@ def model_status():
         return {"model_status": "trained"}
     return {"model_status": "not trained"}
 
-@router.get("/predict-risk/{student_id}")
-def predict_student_risk(student_id: int, db: Session = Depends(get_db)):
+# CHANGED: Accept a string (enroll_no) in the URL
+@router.get("/predict-risk/{enroll_no}")
+def predict_student_risk(enroll_no: str, db: Session = Depends(get_db)):
     if xgb_model is None:
         raise HTTPException(status_code=500, detail="ML Model is not available on the server.")
         
-    # 1. Fetch Student's Marks/Engagement data
-    student_marks = db.query(Marks).filter(Marks.student_id == student_id).all()
+    # 1. Fetch Student by Enrollment Number
+    student = db.query(Student).filter(Student.enrollment_number == enroll_no).first()
+    
+    if not student:
+        raise HTTPException(status_code=404, detail=f"Student with enrollment {enroll_no} not found")
+
+    # 2. Fetch Student's Marks/Engagement data using their internal ID
+    student_marks = db.query(Marks).filter(Marks.student_id == student.id).all()
     
     if not student_marks:
         raise HTTPException(status_code=404, detail="No academic records found for this student")
 
-    # 2. Aggregate the data safely
+    # Aggregate the data safely
     total_clicks = sum((mark.engagement_clicks or 0) for mark in student_marks)
     
     attempts = [mark.num_of_prev_attempts for mark in student_marks if mark.num_of_prev_attempts is not None]
@@ -48,15 +55,13 @@ def predict_student_risk(student_id: int, db: Session = Depends(get_db)):
     total_score = sum((mark.sessional_marks or 0) + (mark.endsem_marks or 0) for mark in student_marks)
     avg_score = total_score / len(student_marks) if student_marks else 0
 
-    # --- THE MISSING VARIABLES ARE RESTORED HERE ---
     studied_credits = 60 * len(student_marks) 
     total_weight = 100 * len(student_marks)
 
-    # 3. Calculate the engineered features
     engagement_per_credit = total_clicks / (studied_credits + 1)
     performance_index = (avg_score * total_weight) / 100
 
-    # 4. Construct the exact DataFrame the model expects
+    # Construct the exact DataFrame the model expects
     feature_dict = {
         "num_of_prev_attempts": [avg_prev_attempts],
         "studied_credits": [studied_credits],
@@ -69,13 +74,14 @@ def predict_student_risk(student_id: int, db: Session = Depends(get_db)):
     
     df_features = pd.DataFrame(feature_dict)
     
-    # 5. Make Prediction
+    # Make Prediction
     try:
         risk_probability = xgb_model.predict_proba(df_features)[0][1] 
         prediction_class = int(xgb_model.predict(df_features)[0])
         
         return {
-            "student_id": student_id,
+            "enrollment_number": enroll_no,
+            "student_name": f"{student.first_name} {student.last_name}", # Bonus: Return their name for the UI!
             "prediction": "At Risk" if prediction_class == 0 else "On Track", 
             "risk_probability": round(float(risk_probability), 3),
             "model_inputs": feature_dict 
