@@ -21,6 +21,14 @@ try:
 except Exception as e:
     xgb_model = None
 
+@router.get("/status")
+def model_status():
+    # We check if the xgb_model successfully loaded into memory at startup
+    if xgb_model is not None:
+        return {"model_status": "trained"}
+    else:
+        return {"model_status": "not trained"}
+
 @router.get("/predict-risk/{student_id}")
 def predict_student_risk(student_id: int, db: Session = Depends(get_db)):
     if xgb_model is None:
