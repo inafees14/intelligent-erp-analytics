@@ -22,10 +22,14 @@ class Student(Base):
 class Subject(Base):
     __tablename__ = "subjects"
     id = Column(Integer, primary_key=True)
+    
+    # --- ADDED PAPER CODE ---
+    paper_code = Column(String, unique=True, index=True) 
+    
     subject_name = Column(String)
     semester = Column(Integer)
     
-    # --- NEW ML FEATURES ---
+    # --- ML FEATURES (KEPT INTACT) ---
     credits = Column(Integer, default=4)
     weight = Column(Integer, default=100)
 
@@ -40,7 +44,7 @@ class Marks(Base):
     sessional_marks = Column(Integer)
     endsem_marks = Column(Integer)
 
-    # --- NEW ML FEATURES ---
+    # --- ML FEATURES (KEPT INTACT) ---
     num_of_prev_attempts = Column(Integer, default=0)
     engagement_clicks = Column(Integer, default=0)  # Proxy for sum_click
 

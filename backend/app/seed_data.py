@@ -1,10 +1,13 @@
-# backend/app/seed_data.py
 import random
 from sqlalchemy.orm import Session
 from .database import SessionLocal
 from . import models
 
 def seed_database():
+    # WARNING: ONLY LEAVE THIS HERE FOR ONE DEPLOYMENT TO RESET THE DB!
+    from .database import engine
+    models.Base.metadata.drop_all(bind=engine)
+    models.Base.metadata.create_all(bind=engine)
     db: Session = SessionLocal()
     try:
         if db.query(models.Student).first():
@@ -13,13 +16,13 @@ def seed_database():
 
         print("Empty database detected. Seeding with ML-ready feature data...")
 
-        # 2. Add Subjects with Credits and Weight
+        # --- ADDED: paper_code to each subject ---
         subjects_data = [
-            {"subject_name": "Descriptive Statistics", "semester": 1, "credits": 4, "weight": 100},
-            {"subject_name": "Calculus & Matrices", "semester": 1, "credits": 4, "weight": 100},
-            {"subject_name": "Physics I", "semester": 1, "credits": 3, "weight": 100},
-            {"subject_name": "Programming in Python", "semester": 1, "credits": 3, "weight": 100},
-            {"subject_name": "General English", "semester": 1, "credits": 2, "weight": 100},
+            {"paper_code": "STX1", "subject_name": "Descriptive Statistics", "semester": 1, "credits": 4, "weight": 100},
+            {"paper_code": "MTC1", "subject_name": "Calculus & Matrices", "semester": 1, "credits": 4, "weight": 100},
+            {"paper_code": "PHX1", "subject_name": "Physics I", "semester": 1, "credits": 3, "weight": 100},
+            {"paper_code": "CSX1", "subject_name": "Programming in Python", "semester": 1, "credits": 3, "weight": 100},
+            {"paper_code": "GEX1", "subject_name": "General English", "semester": 1, "credits": 2, "weight": 100},
         ]
         
         db_subjects = []
