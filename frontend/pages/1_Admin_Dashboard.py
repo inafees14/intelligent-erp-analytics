@@ -42,12 +42,12 @@ with st.form("marks_entry_form", clear_on_submit=True):
     col_a, col_b, col_c = st.columns(3)
     
     with col_a:
-        student_id = st.number_input("Student ID", min_value=1, step=1)
+        enroll_no = st.text_input("Enrollment No. (e.g., GN0501)")
         sessional_marks = st.number_input("Sessional Marks (Max 30)", min_value=0, max_value=30, step=1)
         engagement_clicks = st.number_input("VLE Engagement Clicks", min_value=0, step=1)
         
     with col_b:
-        subject_id = st.number_input("Subject ID", min_value=1, step=1)
+        paper_code = st.text_input("Paper Code (e.g., PHX1)")
         endsem_marks = st.number_input("Endsem Marks (Max 70)", min_value=0, max_value=70, step=1)
         
     with col_c:
@@ -58,8 +58,8 @@ with st.form("marks_entry_form", clear_on_submit=True):
     
     if submit_marks:
         payload = {
-            "student_id": student_id,
-            "subject_id": subject_id,
+            "enroll_no": enroll_no.strip(),
+            "paper_code": paper_code.strip().upper(), # Auto-capitalizes the code!
             "semester": semester,
             "sessional_marks": sessional_marks,
             "endsem_marks": endsem_marks,
