@@ -34,6 +34,16 @@ with col2:
 
 st.divider()
 
+# --- FETCH SUBJECTS FOR DROPDOWN ---
+try:
+    subj_res = requests.get(f"{API}/subjects/", timeout=10)
+    subjects_data = subj_res.json() if subj_res.ok else []
+    # Format as "PHX1 - Physics I" for a highly professional User Experience
+    paper_options = [f"{s.get('paper_code')} - {s.get('subject_name')}" for s in subjects_data if s.get('paper_code')]
+except:
+    paper_options = []
+
+
 # --- 2. STUDENT MARKS ENTRY FORM ---
 st.subheader("📝 Insert/Update Student Marks")
 st.markdown("Use this form to add academic records and VLE engagement data to the database.")
@@ -47,7 +57,15 @@ with st.form("marks_entry_form", clear_on_submit=True):
         engagement_clicks = st.number_input("VLE Engagement Clicks", min_value=0, step=1)
         
     with col_b:
-        paper_code = st.text_input("Paper Code (e.g., PHX1)")
+        # --- THE NEW DROPDOWN LOGIC ---
+        if paper_options:
+            selected_paper = st.selectbox("Paper Code", options=paper_options)
+            # Extract just the code (e.g., "PHX1" from "PHX1 - Physics I")
+            paper_code = selected_paper.split(" - ")[0]
+        else:
+            # Fallback to standard text input if the subjects API is empty or down
+            paper_code = st.text_input("Paper Code (e.g., PHX1)")
+            
         endsem_marks = st.number_input("Endsem Marks (Max 70)", min_value=0, max_value=70, step=1)
         
     with col_c:
